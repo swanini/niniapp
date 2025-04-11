@@ -1,0 +1,65 @@
+.divpop {
+    position: absolute;
+    z-index: 999;
+    top: 20%;
+    left: 35%;
+    width: 30%;
+    height: 50%;
+    border: 2px solid black;
+    border-radius: 15px;
+    background-color: #fff;
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .divpop {
+        position: absolute;
+        z-index: 999;
+        top: 20%;
+        left: 15%;
+        width: 75%;
+        height: 50%;
+        border: 2px solid black;
+        border-radius: 15px;
+        background-color: #fff;
+        display: none;
+    }
+}
+
+.title_area {
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button_area {
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+}
+
+.popBack {
+    position: absolute;
+    height: 170%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background-color: black;
+    opacity: 0.5;
+    z-index: 3;
+    display: none;
+}
+
+input[type="checkbox"] {
+    /* display: none; */
+    width: 20px;
+    height: 20px;
+}
+
+.popUl {
+    display: inline;
+}

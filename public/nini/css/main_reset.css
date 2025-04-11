@@ -1,0 +1,44 @@
+li {
+    list-style: none;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    padding: 0;
+}
+
+
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table {
+    width: 100%;
+}
+
+/* th,
+td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #daf6ff;
+} */
+
+/* th {
+    background: #efd7d7;
+} */
+
+
+@media (max-width: 444px) {
+
+    li {
+        font-size: 15px;
+    }
+}

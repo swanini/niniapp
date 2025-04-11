@@ -1,0 +1,897 @@
+.n-gon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--diameter);
+  height: var(--diameter);
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 50%;
+}
+
+.n-gon::before,
+.n-gon::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background-color: var(--color-bottom);
+  -webkit-clip-path: var(--polygon-shape);
+  clip-path: var(--polygon-shape);
+  left: 50%;
+  top: 50%;
+  --transform: translate(-50%, -50%) scale(calc(1 - ((var(--bevel) * 1) / 100)));
+  transform: var(--transform);
+  box-shadow: inset 0 0 0 1px var(--clip-fix-color, #fff);
+}
+
+.n-gon::after {
+  background-color: var(--color-top);
+  transform: var(--transform) translateZ(var(--height));
+}
+
+.n-gon>div {
+  --slice-angle: calc((var(--start-angle) + (var(--angle) * var(--i))) * 1deg);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--height);
+  height: calc(50% - (var(--bevel) * 1% / 2));
+  transform: translate(-100%, 0%) rotateY(90deg) rotateX(var(--slice-angle));
+  transform-origin: 100% 0;
+  transform-style: preserve-3d;
+}
+
+.n-gon>div::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: block;
+  left: 0;
+  top: 0;
+  background: green;
+  transform: rotateX(calc(var(--angle) * 1deg));
+  transform-origin: 0 0;
+  display: none;
+}
+
+.n-gon-sub>div>div,
+.n-gon>div::after {
+  --shade-binary: calc(var(--i) - (var(--binary) * (2 * var(--l))));
+  --shades: clamp(0,
+      (var(--shade-binary) / var(--sides)) * var(--shade-opacity),
+      1);
+  --shade: rgba(var(--shade-color),
+      var(--shade-color),
+      var(--shade-color),
+      calc(var(--shades) + var(--iso, 0)));
+  --edge-size: calc(var(--edge-length) * var(--diameter) * ((100 - var(--bevel)) / 100) * (var(--edge-fix, 100) / 100));
+  content: "";
+  position: absolute;
+  right: calc(var(--bevel-height) * 0.5%);
+  bottom: 0;
+  width: calc(100% - var(--bevel-height) * 1%);
+  height: var(--edge-size);
+  background-color: var(--color-side);
+  background-image: linear-gradient(var(--shade), var(--shade));
+  display: block;
+  transform: rotateX(calc(var(--edge-angle) * 1deg)) translateY(100%);
+  transform-origin: 0 100%;
+  box-shadow: 0 0 0 2px var(--smooth-color, rgba(0, 0, 0, 0.01));
+}
+
+.n-gon[data-slice]>div:nth-child(1) {
+  background-color: var(--color-side-start);
+}
+
+.n-gon[data-slice]>div:last-child:before {
+  background-color: var(--color-side-end);
+  display: block;
+}
+
+.n-gon.n-gon-sub[data-slice]>div:nth-child(1) {
+  background-color: transparent;
+}
+
+.n-gon {
+  --diameter: calc(500 * var(--px));
+  --height: calc(150 * var(--px));
+  --clip-fix-color: rgba(255, 255, 255, 0.1);
+  --edge-fix: 100;
+  --bevel-height: 0;
+  --bevel: 0;
+  --shade-color: 0;
+  --shade-opacity: 1;
+  --color-side: #009fff;
+  --color-top: #009fff;
+  --color-bottom: #0b7fc4;
+  --color-side-start: #0575b8;
+  --color-side-end: #0b7fc4;
+}
+
+.sphere {
+  --polygon-shape: polygon(95.0484433951% 71.6941869559%, 81.1744900929% 89.0915741234%, 61.1260466978% 98.7463956091%, 38.8739533022% 98.7463956091%, 18.8255099071% 89.0915741234%, 4.9515566049% 71.6941869559%, 0% 50%, 4.9515566049% 28.3058130441%, 18.8255099071% 10.9084258766%, 38.8739533022% 1.2536043909%, 61.1260466978% 1.2536043909%, 81.1744900929% 10.9084258766%, 95.0484433951% 28.3058130441%, 100% 50%);
+  --diameter: calc(60 * var(--px));
+  --texture: var(--strawberry-texture);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--diameter);
+  height: var(--diameter);
+  transform: translate(-100%, -50%) rotateY(90deg) translateX(var(--diameter)) translateX(-50%);
+  transform-style: preserve-3d;
+  transform-origin: 100% 0;
+}
+
+.sphere::before,
+.sphere::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background-image: var(--texture), var(--bgi);
+  background-size: 100% 100%;
+  transform-origin: 50% 50%;
+  --max-rotation: calc((360 + 90 + var(--cameraZ)) * 1deg);
+  border-radius: 50%;
+}
+
+.sphere::before {
+  background-color: orangered;
+  transform: rotateY(90deg) rotateZ(calc(90deg + var(--cameraZ) * 1deg)) translateZ(-0.1px);
+}
+
+.sphere::after {
+  background-color: orange;
+  transform: rotateX(calc(90deg + var(--cameraZ) * 1deg)) rotateY(calc(90deg + var(--cameraY) * -1deg));
+}
+
+@-webkit-keyframes rotateSphereBefore {
+  to {
+    transform: rotateY(90deg) rotateZ(var(--max-rotation)) translateZ(-0.1px);
+  }
+}
+
+@keyframes rotateSphereBefore {
+  to {
+    transform: rotateY(90deg) rotateZ(var(--max-rotation)) translateZ(-0.1px);
+  }
+}
+
+@-webkit-keyframes rotateSphereAfter {
+  to {
+    transform: rotateX(var(--max-rotation)) rotateY(calc(90deg + var(--cameraY) * -1deg));
+  }
+}
+
+@keyframes rotateSphereAfter {
+  to {
+    transform: rotateX(var(--max-rotation)) rotateY(calc(90deg + var(--cameraY) * -1deg));
+  }
+}
+
+.leaf {
+  --diameter: calc(40 * var(--px));
+  --texture: var(--noise-texture);
+  --angleX: 146deg;
+  --angleY: 0deg;
+  --angleZ: -94deg;
+  --shiftZ: 76%;
+  --shiftX: calc(-37 * var(--px));
+  --shiftY: calc(15 * var(--px));
+  --scaleX: -1;
+  --shadow-color: transparent;
+  --shadow-shift: calc(7 * var(--px));
+  --shadow-blur: calc(7 * var(--px));
+  position: absolute;
+  left: var(--shiftZ);
+  top: 50%;
+  width: var(--diameter);
+  height: var(--diameter);
+  transform: translate(-100%, -50%) rotateY(90deg) translateX(var(--diameter)) translateX(-50%);
+  transform-style: preserve-3d;
+  transform-origin: 100% 0;
+}
+
+.leaf::after,
+.leaf::before {
+  content: "";
+  position: absolute;
+  right: var(--shiftY);
+  bottom: var(--shiftX);
+  width: 100%;
+  height: 100%;
+  display: block;
+  background-image: var(--texture), var(--bgi, var(--bgi-def));
+  background-size: 100% 100%;
+  transform-origin: 50% 50%;
+  transform: scaleX(var(--scaleX)) rotateZ(var(--angleZ)) rotateX(var(--angleX)) translateZ(var(--s1, 0px)) rotateY(var(--angleY));
+  -webkit-clip-path: polygon(99% 88%, 90% 92%, 80% 94%, 73% 94%, 65% 92%, 54% 88%, 44% 80%, 33% 73%, 25% 64%, 18% 57%, 12% 49%, 6% 44%, 2% 36%, 8% 35%, 20% 35%, 36% 35%, 49% 35%, 62% 35%, 73% 39%, 84% 44%, 90% 52%, 95% 64%, 97% 72%, 99% 80%);
+  clip-path: polygon(99% 88%, 90% 92%, 80% 94%, 73% 94%, 65% 92%, 54% 88%, 44% 80%, 33% 73%, 25% 64%, 18% 57%, 12% 49%, 6% 44%, 2% 36%, 8% 35%, 20% 35%, 36% 35%, 49% 35%, 62% 35%, 73% 39%, 84% 44%, 90% 52%, 95% 64%, 97% 72%, 99% 80%);
+}
+
+.leaf::before {
+  --s1: var(--shadow-shift);
+  background-image: none;
+  background-color: var(--shadow-color);
+  filter: blur(var(--shadow-blur));
+  border-radius: 0 50% 0 50%;
+  -webkit-clip-path: none;
+  clip-path: none;
+  width: 85%;
+  height: 61%;
+}
+
+.l4 {
+  --diameter: calc(34 * var(--px));
+  --angleX: 120deg;
+  --angleY: 0;
+  --angleZ: -96deg;
+  --shiftZ: 115%;
+  --shiftX: calc(-10 * var(--px));
+  --shiftY: calc(14 * var(--px));
+  --shadow-shift: 0;
+  --shadow-blur: 0;
+}
+
+.l5 {
+  --angleY: 16deg;
+  --angleZ: -146deg;
+  --shiftZ: -20%;
+  --shiftX: calc(-21 * var(--px));
+  --shiftY: calc(13 * var(--px));
+}
+
+.l6 {
+  --angleX: 119deg;
+  --angleZ: -160deg;
+  --shiftZ: -131%;
+  --shiftX: 0;
+  --shiftY: calc(10 * var(--px));
+  --angleY: 43deg;
+}
+
+.l7 {
+  --diameter: calc(36 * var(--px));
+  --angleX: 156deg;
+  --angleY: 38deg;
+  --angleZ: -190deg;
+  --shiftZ: -10%;
+  --shiftX: calc(30 * var(--px));
+  --shiftY: calc(12 * var(--px));
+  --shadow-shift: 0;
+  --shadow-blur: 0;
+}
+
+.l8 {
+  --angleX: 135deg;
+  --angleY: 22deg;
+  --angleZ: -170deg;
+  --shiftZ: -22%;
+  --shiftX: calc(1 * var(--px));
+  --shiftY: calc(14 * var(--px));
+}
+
+.l9 {
+  --angleX: 207deg;
+  --angleY: 6deg;
+  --shiftZ: -6%;
+  --shiftX: calc(23 * var(--px));
+}
+
+/** ==== colors ==== */
+:root {
+  --strawberry-shadow: rgba(196, 65, 65, 0.75);
+  --cake-base-shadow-color: #4933284a;
+  --cake-base-shadow-dark-color: #7b6458;
+  --cake-top-color: #e8898e;
+  --cake-top-color-light: #e3a2a5;
+  --cake-base-sides-color: #e5626c;
+  --cake-base-sides-color-light: #ea7a82;
+  --cake-base-spot-1: #ddbaa6;
+  --cake-base-spot-2: #e4c7b7;
+  --cake-base-sliced-shadow-color: #47362db5;
+  --cake-base-inner-layer-color: #4e372c7a;
+  --cake-base-glow-color: #bf333357;
+  --cake-sliced-inner-layer-1-1: #e9a6a8;
+  --cake-sliced-inner-layer-1-2: #ea7a82;
+  --cake-sliced-inner-layer-2-1: #ec999c;
+  --cake-sliced-inner-layer-2-2: #ff727c;
+  --cake-base-edges-texture: url("https://shadowshahriar.github.io/assets/codepen/css3d-cake/textures/sponge-slice.png");
+  --sponge-texture: url("https://shadowshahriar.github.io/assets/codepen/css3d-cake/textures/sponge.png");
+  --strawberry-texture: url("https://shadowshahriar.github.io/assets/codepen/css3d-cake/textures/plate.png");
+  --cake-top-texture: url("https://shadowshahriar.github.io/assets/codepen/css3d-cake/textures/cake-top.png");
+  --noise-texture: url("https://shadowshahriar.github.io/assets/codepen/css3d-cake/textures/noise.png");
+}
+
+/* html::before {
+  background-image: radial-gradient(circle at 25% 42%, #fff, #e2cec4);
+} */
+
+[data-scene]::before {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.plate {
+  --shade-color: 0;
+  --color-side: #fffffb;
+  --color-top: #fde8e3;
+  --color-bottom: #ebe6d8;
+  --color-side-start: #fff;
+  --color-side-end: #fff;
+  --top-shades: #baa8b3;
+  --top-layer-1: #fffffa;
+  --top-layer-2: #fefaef;
+  --texture-top: url("https://shadowshahriar.github.io/assets/codepen/css3d-cake/textures/plate.png");
+  --texture-bottom: url("https://shadowshahriar.github.io/assets/codepen/css3d-cake/textures/plate-bottom.png");
+  --texture-bottom-color: #fde8e3;
+  --texture-edges: url("https://shadowshahriar.github.io/assets/codepen/css3d-cake/textures/plate-edges.png");
+}
+
+.cake-base {
+  --color-side: #f2cab6;
+  --color-top: var(--cake-top-color);
+  --color-bottom: #eebfa8;
+  --color-side-start: #e6b7a0;
+  --color-side-end: #fac9b1;
+}
+
+.n-gon.n-gon-sub.base-edges {
+  --color-side: #edb58e;
+  --color-bottom: #e5b899;
+}
+
+.spheres .sphere {
+  --diameter: var(--sphere-d);
+  --bgi: radial-gradient(circle at 0% 110%, #dab0aa 11%, #d94444);
+}
+
+.spheres>div:nth-child(3n-1)>.sphere {
+  --bgi: radial-gradient(circle at 91% 50%, #d78b6b 11%, #fad3bf);
+}
+
+.leaf {
+  --bgi-def: radial-gradient(circle at center, #71bc57, #65a234);
+}
+
+.l1 {
+  --shadow-color: rgba(142, 73, 73, 0.331);
+}
+
+.l4 {
+  --bgi: radial-gradient(circle at center, #71bc57, #487920);
+}
+
+.l5 {
+  --bgi: radial-gradient(circle at center, #a4d395, #5a912d);
+}
+
+.l6 {
+  --bgi: radial-gradient(circle at center, #a4d395, #71bc57);
+}
+
+.l7 {
+  --bgi: radial-gradient(circle at center, #76c759, #88c357);
+}
+
+.l8 {
+  --bgi: radial-gradient(circle at center, #89b81c, #68941b);
+}
+
+.l9 {
+  --bgi: radial-gradient(circle at center, #82ba29, #68941b);
+}
+
+.cake-base,
+.plate {
+  --smooth-color: rgba(0, 0, 0, 0);
+}
+
+/** ==== geometrical configuration ==== */
+/** ==== physical configuration ==== */
+:root {
+  --plate-length: calc(640 * var(--px));
+  --plate-height: calc(20 * var(--px));
+  --plate-shadow-blur: calc(30 * var(--px));
+  --cake-base-shadow-blur: calc(29 * var(--px));
+  --plate-shadow-transform: translate3d(-50%, -58%, -1px) scaleY(114%);
+  --cake-diameter: calc(380 * var(--px));
+  --cake-edges-size: calc(16 * var(--px));
+  --cake-edges-height: calc(19 * var(--px));
+  --cake-height: calc(134 * var(--px));
+  --cake-rZ: -108deg;
+  --strawberry-circle-diameter: calc(280 * var(--px));
+  --strawberry-diameter: calc(60 * var(--px));
+  --strawberry-start: -30;
+  --strawberry-increment: 27;
+  --top-cream-height: calc(20 * var(--px));
+  --layer-cream-height: calc(20 * var(--px));
+}
+
+/** ==== camera configuration ==== */
+[data-camera] {
+  --scene-size: 0;
+  --perspective: 800;
+  --cameraZ: 108;
+  --cameraY: 46;
+  --translateZ: 10;
+  /* transform-style: preserve-3d; */
+  /* transform: translate(-37%, -12%) scaleX(0.3) scaleY(0.3); */
+  /* transform: translate(-45%, -30%) scaleX(0.3) scaleY(0.3) */
+  /* transform: scaleX(0.3) scaleY(0.3); */
+  /* transform: scale(0.3); */
+  /* width: 60%;
+  height: 125%; */
+}
+
+/** ==== plate shadow ==== */
+[data-scene] {
+  background: none;
+}
+
+[data-scene]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--plate-length);
+  height: var(--plate-length);
+  transform: var(--plate-shadow-transform);
+  display: block;
+  border-radius: 50%;
+  filter: blur(var(--plate-shadow-blur));
+}
+
+/** ==== plate ==== */
+.plate {
+  --sides: 14;
+  --angle: 25.7142857143;
+  --edge-angle: 102.8571428571;
+  --edge-length: 0.222520934;
+  --start-angle: 64.2857142857;
+  --diameter: var(--plate-length);
+  --height: var(--plate-height);
+  --shade-opacity: 1;
+  --polygon-shape: polygon(95.0484433951% 71.6941869559%, 81.1744900929% 89.0915741234%, 61.1260466978% 98.7463956091%, 38.8739533022% 98.7463956091%, 18.8255099071% 89.0915741234%, 4.9515566049% 71.6941869559%, 0% 50%, 4.9515566049% 28.3058130441%, 18.8255099071% 10.9084258766%, 38.8739533022% 1.2536043909%, 61.1260466978% 1.2536043909%, 81.1744900929% 10.9084258766%, 95.0484433951% 28.3058130441%, 100% 50%);
+  --bevel-height: -0.8;
+  transform: translate(-50%, -50%) rotateZ(12deg);
+}
+
+.plate::before {
+  background-image: radial-gradient(circle at center, transparent 50%, var(--texture-bottom-color)), var(--texture-bottom);
+}
+
+.plate::after {
+  --layer-1: linear-gradient(0deg, var(--top-layer-1), transparent);
+  --layer-2: radial-gradient(ellipse at 54% 97%,
+      var(--top-layer-2),
+      transparent);
+  background-image: var(--layer-2), var(--texture-top), var(--layer-1);
+  box-shadow: inset calc(-28 * var(--px)) calc(53 * var(--px)) calc(58 * var(--px)) calc(-29 * var(--px)) var(--top-shades);
+  border-radius: 50%;
+}
+
+.plate>div:nth-child(1) {
+  --binary: 0;
+  --i: 0;
+  --l: -7;
+}
+
+.plate>div:nth-child(2) {
+  --binary: 0;
+  --i: 1;
+  --l: -6;
+}
+
+.plate>div:nth-child(3) {
+  --binary: 0;
+  --i: 2;
+  --l: -5;
+}
+
+.plate>div:nth-child(4) {
+  --binary: 0;
+  --i: 3;
+  --l: -4;
+}
+
+.plate>div:nth-child(5) {
+  --binary: 0;
+  --i: 4;
+  --l: -3;
+}
+
+.plate>div:nth-child(6) {
+  --binary: 0;
+  --i: 5;
+  --l: -2;
+}
+
+.plate>div:nth-child(7) {
+  --binary: 0;
+  --i: 6;
+  --l: -1;
+}
+
+.plate>div:nth-child(8) {
+  --binary: 0;
+  --i: 7;
+  --l: 0;
+}
+
+.plate>div:nth-child(9) {
+  --binary: 1;
+  --i: 8;
+  --l: 1;
+}
+
+.plate>div:nth-child(10) {
+  --binary: 1;
+  --i: 9;
+  --l: 2;
+}
+
+.plate>div:nth-child(11) {
+  --binary: 1;
+  --i: 10;
+  --l: 3;
+}
+
+.plate>div:nth-child(12) {
+  --binary: 1;
+  --i: 11;
+  --l: 4;
+}
+
+.plate>div:nth-child(13) {
+  --binary: 1;
+  --i: 12;
+  --l: 5;
+}
+
+.plate>div:nth-child(14) {
+  --binary: 1;
+  --i: 13;
+  --l: 6;
+}
+
+.plate>div::after {
+  background-image: var(--texture-edges), linear-gradient(var(--shade), var(--shade));
+  background-size: auto 100%;
+  background-position: 0 calc(var(--i) * 40 * var(--px));
+}
+
+/** ==== cake base ==== */
+.cake-base {
+  --sides: 24;
+  --angle: 15;
+  --edge-angle: 97.5;
+  --edge-length: 0.1305261922;
+  --start-angle: 75;
+  --edge-fix: 102;
+  --shade-color: 255;
+  --shade-opacity: 0.6;
+  --diameter: var(--cake-diameter);
+  --height: var(--cake-height);
+  --polygon-shape: polygon(98.2962913145% 62.9409522551%, 50% 50%, 50% 50%, 50% 50%, 62.9409522551% 98.2962913145%, 50% 100%, 37.0590477449% 98.2962913145%, 25% 93.3012701892%, 14.6446609407% 85.3553390593%, 6.6987298108% 75%, 1.7037086855% 62.9409522551%, 0% 50%, 1.7037086855% 37.0590477449%, 6.6987298108% 25%, 14.6446609407% 14.6446609407%, 25% 6.6987298108%, 37.0590477449% 1.7037086855%, 50% 0%, 62.9409522551% 1.7037086855%, 75% 6.6987298108%, 85.3553390593% 14.6446609407%, 93.3012701892% 25%, 98.2962913145% 37.0590477449%, 100% 50%);
+  --bevel-height: -0.8;
+  transform: translate(-50%, -50%) translateZ(var(--plate-height)) rotateZ(var(--cake-rZ));
+}
+
+.cake-base>div:nth-child(1) {
+  --binary: 0;
+  --i: 0;
+  --l: -12;
+}
+
+.cake-base>div:nth-child(2) {
+  --binary: 0;
+  --i: 1;
+  --l: -11;
+}
+
+.cake-base>div:nth-child(3) {
+  --binary: 0;
+  --i: 2;
+  --l: -10;
+}
+
+.cake-base>div:nth-child(4) {
+  --binary: 0;
+  --i: 3;
+  --l: -9;
+}
+
+.cake-base>div:nth-child(5) {
+  --binary: 0;
+  --i: 4;
+  --l: -8;
+}
+
+.cake-base>div:nth-child(6) {
+  --binary: 0;
+  --i: 5;
+  --l: -7;
+}
+
+.cake-base>div:nth-child(7) {
+  --binary: 0;
+  --i: 6;
+  --l: -6;
+}
+
+.cake-base>div:nth-child(8) {
+  --binary: 0;
+  --i: 7;
+  --l: -5;
+}
+
+.cake-base>div:nth-child(9) {
+  --binary: 0;
+  --i: 8;
+  --l: -4;
+}
+
+.cake-base>div:nth-child(10) {
+  --binary: 0;
+  --i: 9;
+  --l: -3;
+}
+
+.cake-base>div:nth-child(11) {
+  --binary: 0;
+  --i: 10;
+  --l: -2;
+}
+
+.cake-base>div:nth-child(12) {
+  --binary: 0;
+  --i: 11;
+  --l: -1;
+}
+
+.cake-base>div:nth-child(13) {
+  --binary: 0;
+  --i: 12;
+  --l: 0;
+}
+
+.cake-base>div:nth-child(14) {
+  --binary: 1;
+  --i: 13;
+  --l: 1;
+}
+
+.cake-base>div:nth-child(15) {
+  --binary: 1;
+  --i: 14;
+  --l: 2;
+}
+
+.cake-base>div:nth-child(16) {
+  --binary: 1;
+  --i: 15;
+  --l: 3;
+}
+
+.cake-base>div:nth-child(17) {
+  --binary: 1;
+  --i: 16;
+  --l: 4;
+}
+
+.cake-base>div:nth-child(18) {
+  --binary: 1;
+  --i: 17;
+  --l: 5;
+}
+
+.cake-base>div:nth-child(19) {
+  --binary: 1;
+  --i: 18;
+  --l: 6;
+}
+
+.cake-base>div:nth-child(20) {
+  --binary: 1;
+  --i: 19;
+  --l: 7;
+}
+
+/** ==== strawberries ==== */
+.spheres {
+  --d: var(--strawberry-circle-diameter);
+  --sphere-d: var(--strawberry-diameter);
+  --start: var(--strawberry-start);
+  --increment: var(--strawberry-increment);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--d);
+  height: var(--d);
+  transform: translate(-50%, -50%) translateZ(calc(var(--cake-height) + var(--plate-height) + (1 * var(--px))));
+}
+
+.spheres>div:nth-child(1) {
+  --i: 1;
+  z-index: -1;
+}
+
+.spheres>div:nth-child(2) {
+  --i: 2;
+  z-index: -2;
+}
+
+.spheres>div:nth-child(3) {
+  --i: 3;
+  z-index: -3;
+}
+
+.spheres>div:nth-child(4) {
+  --i: 4;
+  z-index: -4;
+}
+
+.spheres>div:nth-child(5) {
+  --i: 5;
+  z-index: -5;
+}
+
+.spheres>div:nth-child(6) {
+  --i: 6;
+  z-index: -6;
+}
+
+.spheres>div:nth-child(7) {
+  --i: 7;
+  z-index: -7;
+}
+
+.spheres>div:nth-child(8) {
+  --i: 8;
+  z-index: -8;
+}
+
+.spheres>div:nth-child(9) {
+  --i: 9;
+  z-index: -9;
+}
+
+.spheres>div:nth-child(10) {
+  --i: 10;
+  z-index: -10;
+}
+
+.spheres>div {
+  --angle: calc((var(--start) + (var(--increment) * var(--i))) * 1deg);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--sphere-d);
+  height: var(--sphere-d);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(var(--angle)) translate(calc(var(--d) * 0.5)) rotate(calc(var(--angle) * -1));
+  transform-style: preserve-3d;
+  box-shadow: calc(-8 * var(--px)) calc(-8 * var(--px)) calc(4 * var(--px)) 0 rgba(0, 0, 0, 0.13), calc(-3 * var(--px)) calc(-9 * var(--px)) calc(27 * var(--px)) 0 var(--strawberry-shadow);
+}
+
+/** ==== shadows ==== */
+.cake-base-shadow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--cake-diameter);
+  height: var(--cake-diameter);
+  transform: translate3d(-50%, -50%, var(--plate-height));
+  filter: blur(var(--cake-base-shadow-blur));
+}
+
+.cake-base-shadow::before,
+.cake-base-shadow::after {
+  content: "";
+  position: absolute;
+  display: block;
+  right: 0;
+  top: 0;
+  background-color: var(--cake-base-shadow-color);
+}
+
+.cake-base-shadow::before {
+  width: 115%;
+  height: 115%;
+  border-radius: 50%;
+  transform: translate(11%, -12%);
+  background-image: radial-gradient(circle at center, var(--cake-base-shadow-dark-color) 40%, transparent 17%);
+}
+
+.cake-base-shadow::after {
+  width: 50%;
+  height: 77%;
+  transform: translate(70%, -13%) rotate(28deg);
+  transform-origin: 0 0;
+}
+
+/** ==== decoration ==== */
+.cake-base>div {
+  --light: linear-gradient(-90deg, var(--cake-base-glow-color), transparent);
+}
+
+.cake-base>div::after {
+  --common: var(--sponge-texture), linear-gradient(var(--shade), var(--shade)),
+    linear-gradient(90deg,
+      var(--cake-base-sides-color),
+      var(--cake-base-sides-color-light)),
+    linear-gradient(var(--cake-base-inner-layer-color),
+      var(--cake-base-inner-layer-color));
+  background-image: var(--light), var(--common);
+  background-size: 100% 100%, cover, 100% 100%, var(--top-cream-height) 100%, var(--cake-edges-height) 100%;
+  background-repeat: no-repeat, repeat, repeat, repeat-y, repeat-y;
+  background-position: 0 0, calc(var(--i) * 14 * var(--px)) calc(var(--i) * 11 * var(--px)), 0 0, 0 0, top right;
+}
+
+.cake-base>div:last-child::after {
+  --l1: radial-gradient(circle at center,
+      var(--cake-base-spot-1) 30%,
+      transparent 34%);
+  --l2: radial-gradient(circle at center,
+      var(--cake-base-spot-2) 30%,
+      transparent 34%);
+  background-image: var(--light), var(--l2), var(--l1), var(--l1), var(--common);
+  background-size: 100% 100%, 14% 14%, 20% 20%, 30% 30%, 68% 83%, 100% 100%, var(--top-cream-height) 100%, var(--cake-edges-height) 100%;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat, repeat, repeat-y, repeat-y;
+  background-position: 0 0, 55% 52%, 36% 72%, 20% 40%, 0 0, 0 0, 0 0, top right;
+}
+
+.n-gon.cake-base>div:first-child {
+  --common: linear-gradient(0deg,
+      var(--cake-base-inner-layer-color) 51%,
+      var(--color-side)),
+    var(--sponge-texture),
+    linear-gradient(var(--shade, transparent), var(--shade, transparent)),
+    linear-gradient(49deg,
+      var(--cake-base-sides-color),
+      var(--cake-base-sides-color-light));
+  background-image: linear-gradient(200deg, var(--cake-base-sliced-shadow-color), transparent), var(--light), linear-gradient(49deg, var(--cake-sliced-inner-layer-1-1), var(--cake-sliced-inner-layer-1-2)), var(--common);
+  background-size: 100% 100%, 100% 100%, var(--layer-cream-height) 100%, var(--cake-edges-height) 1px, cover, 100% 100%, var(--top-cream-height) 100%;
+  background-repeat: repeat, no-repeat, repeat-y, repeat-y, repeat, repeat, repeat-y;
+  background-position: 0 0, 0 0, top center, top right, 0 0, 0 0, 0 0;
+}
+
+.n-gon.cake-base>div:last-child::before {
+  --common: linear-gradient(0deg,
+      var(--color-side),
+      var(--cake-base-inner-layer-color) 51%),
+    var(--sponge-texture),
+    linear-gradient(var(--shade, transparent), var(--shade, transparent)),
+    linear-gradient(49deg,
+      var(--cake-base-sides-color),
+      var(--cake-base-sides-color-light));
+  background-image: linear-gradient(185deg, var(--cake-base-sliced-shadow-color), transparent), var(--light), linear-gradient(49deg, var(--cake-sliced-inner-layer-2-1), var(--cake-sliced-inner-layer-2-2)), var(--common);
+  background-size: 100% 100%, 100% 100%, var(--layer-cream-height) 100%, var(--cake-edges-height) 1px, cover, 100% 100%, var(--top-cream-height) 100%;
+  background-repeat: repeat, no-repeat, repeat-y, repeat-y, repeat, repeat, repeat-y;
+  background-position: 0 0, 0 0, top center, top right, 0 0, 0 0, 0 0;
+}
+
+.n-gon.cake-base::after {
+  background-image: var(--cake-top-texture), conic-gradient(from 106deg at center, var(--cake-top-color), var(--cake-top-color-light), var(--cake-top-color));
+}
+
+/** ==== rotation ==== */
+[data-camera][data-autorotate]>[data-scene] {
+  -webkit-animation: rotateCamera var(--auto-rotate-timing-func) var(--auto-rotate-duration) var(--auto-rotate-direction) infinite;
+  animation: rotateCamera var(--auto-rotate-timing-func) var(--auto-rotate-duration) var(--auto-rotate-direction) infinite;
+}
+
+[data-camera][data-autorotate] .sphere::before {
+  -webkit-animation: rotateSphereBefore var(--auto-rotate-timing-func) var(--auto-rotate-duration) var(--auto-rotate-direction) infinite;
+  animation: rotateSphereBefore var(--auto-rotate-timing-func) var(--auto-rotate-duration) var(--auto-rotate-direction) infinite;
+}
+
+[data-camera][data-autorotate] .sphere::after {
+  -webkit-animation: rotateSphereAfter var(--auto-rotate-timing-func) var(--auto-rotate-duration) var(--auto-rotate-direction) infinite;
+  animation: rotateSphereAfter var(--auto-rotate-timing-func) var(--auto-rotate-duration) var(--auto-rotate-direction) infinite;
+}
