@@ -1,0 +1,39 @@
+.db-check-container {
+    max-width: 600px;
+    margin: 100px auto;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+}
+
+.status-box {
+    border-radius: 15px;
+    padding: 30px 20px;
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.2);
+    border: 2px solid #f3c1d8;
+    background: #fff5f9;
+    transition: all 0.3s ease-in-out;
+}
+
+.status-box.success {
+    background: #ffe6f0;
+    color: #e91e63;
+}
+
+.status-box.fail {
+    background: #fff0f3;
+    color: #b00020;
+    border-color: #f8bbd0;
+}
+
+.status-icon {
+    width: 120px;
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.status-icon:hover {
+    transform: scale(1.05);
+}

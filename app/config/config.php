@@ -6,9 +6,9 @@ return [
             'host' => 'localhost',
             'port' => 3306,
             'credentials' => [
-                'dbname' => 'swannenini',
-                'user' => 'root',
-                'password' => 'dPQmsznzlxhRl#1'
+                'dbname' => '',
+                'user' => '',
+                'password' => ''
             ],
             'options' => [
                 'charset' => 'utf8mb4',
@@ -17,9 +17,9 @@ return [
         ]
     ],
     'app' => [
-        'name' => 'creamphp',
+        'name' => 'niniphp',
         'debug' => true,
-        'timezone' => 'Asia/Seoul',
-        'url' => 'http://dev.swanini.com'
+        'timezone' => 'city/nation',
+        'url' => 'https://yourdomain.com'
     ]
 ];

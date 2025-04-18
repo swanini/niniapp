@@ -1,11 +1,14 @@
 <?php
 
-class Database {
+class Database
+{
     private static ?PDO $pdo = null;
+    private static ?string $error = null;
 
-    public static function connect(): PDO {
+    public static function connect(): ?PDO
+    {
         if (self::$pdo === null) {
-            $config = include __DIR__ . '/../config/config.php'; // 변경된 경로 반영
+            $config = include __DIR__ . '/../config/config.php';
             $db = $config['database']['mysql'];
 
             $dsn = "mysql:host={$db['host']};port={$db['port']};dbname={$db['credentials']['dbname']};charset={$db['options']['charset']}";
@@ -22,9 +25,15 @@ class Database {
                     ]
                 );
             } catch (PDOException $e) {
-                die("DB 연결 오류: " . $e->getMessage());
+                self::$error = $e->getMessage();
+                return null;
             }
         }
         return self::$pdo;
+    }
+
+    public static function getError(): ?string
+    {
+        return self::$error;
     }
 }

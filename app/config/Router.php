@@ -17,7 +17,7 @@ class Router
 
     public function dispatch($uri, $method)
     {
-        $uri = parse_url($uri, PHP_URL_PATH); // 쿼리스트링 제거
+        $uri = parse_url($uri, PHP_URL_PATH);
 
         if ($method === 'GET' && isset($this->getRoutes[$uri])) {
             $this->call($this->getRoutes[$uri]);
@@ -25,7 +25,7 @@ class Router
             $this->call($this->postRoutes[$uri]);
         } else {
             http_response_code(404);
-            echo "페이지를 찾을 수 없습니다.";
+            echo "The page cannot be found.";
         }
     }
 
